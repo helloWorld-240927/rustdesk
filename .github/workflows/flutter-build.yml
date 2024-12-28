@@ -196,7 +196,7 @@ jobs:
               ANDROID_TARGET=x86
             ;;
           esac
-          if ! sh ./flutter/build_android_deps.sh "${ANDROID_TARGET}"; then
+          if ! ./flutter/build_android_deps.sh "${ANDROID_TARGET}"; then
             find "${VCPKG_ROOT}/" -name "*.log" | while read -r _1; do
               echo "$_1:"
               echo "======"
