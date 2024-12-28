@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x
+echo "scl_test_0"
 set -e -o pipefail
 echo "scl_test_1"
 ANDROID_ABI=$1
