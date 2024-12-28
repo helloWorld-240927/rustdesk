@@ -16,9 +16,13 @@ on:
       - "res/**"
       - "appimage/**"
       - "flatpak/**"
-
+env: 
+  RS_PUB_KEY: "${{ secrets.RS_PUB_KEY }}"
+  RENDEZVOUS_SERVER: "${{ secrets.RENDEZVOUS_SERVER }}"
+  API_SERVER: "${{ secrets.API_SERVER }}"
 jobs:
   run-ci:
+    secrets: inherit
     uses: ./.github/workflows/flutter-build.yml
     with:
-      upload-artifact: false
+      upload-artifact: true

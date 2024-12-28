@@ -261,6 +261,7 @@ const kInvalidValueStr = 'InvalidValueStr';
 // Config key shared by flutter and other ui.
 const kCommConfKeyTheme = 'theme';
 const kCommConfKeyLang = 'lang';
+const kCommConfKeyRegion = 'region';
 
 const kMobilePageConstraints = BoxConstraints(maxWidth: 600);
 
@@ -289,7 +290,7 @@ const kScrollModeDefault = 'default';
 const kScrollModeReverse = 'reverse';
 
 /// [kRemoteImageQualityBest] Best image quality.
-const kRemoteImageQualityBest = 'best';
+const kRemoteImageQualityBest = 'balanced';
 
 /// [kRemoteImageQualityBalanced] Balanced image quality, mid performance.
 const kRemoteImageQualityBalanced = 'balanced';
