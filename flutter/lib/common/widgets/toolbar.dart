@@ -159,12 +159,12 @@ List<TTextMenu> toolbarControls(BuildContext context, String id, FFI ffi) {
 
   // transferFile
   if (isDesktop) {
-    v.add(
-      TTextMenu(
-          child: Text(translate('Transfer file')),
-          onPressed: () =>
-              connectWithToken(isFileTransfer: true, isTcpTunneling: false)),
-    );
+    // v.add(
+    //   TTextMenu(
+    //       child: Text(translate('Transfer file')),
+    //       onPressed: () =>
+    //           connectWithToken(isFileTransfer: true, isTcpTunneling: false)),
+    // );
   }
   // tcpTunneling
   if (isDesktop) {

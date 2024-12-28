@@ -184,7 +184,7 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
           break;
         case SettingsTabKey.network:
           settingTabs
-              .add(_TabInfo(tab, 'Network', Icons.link_outlined, Icons.link));
+              .add(_TabInfo(tab, 'Regions', Icons.link_outlined, Icons.link));
           break;
         case SettingsTabKey.display:
           settingTabs.add(_TabInfo(tab, 'Display',
@@ -1415,7 +1415,7 @@ class _Network extends StatefulWidget {
 class _NetworkState extends State<_Network> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  bool locked = !isWeb && bind.mainIsInstalled();
+
 
   final scrollController = ScrollController();
 
@@ -1423,20 +1423,11 @@ class _NetworkState extends State<_Network> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     return ListView(controller: scrollController, children: [
-      _lock(locked, 'Unlock Network Settings', () {
-        locked = false;
-        setState(() => {});
-      }),
-      preventMouseKeyBuilder(
-        block: locked,
-        child: Column(children: [
-          network(context),
-        ]),
-      ),
+      region(context),
     ]).marginOnly(bottom: _kListViewBottomMargin);
   }
 
-  Widget network(BuildContext context) {
+  Widget region(BuildContext context) {
     final hideServer =
         bind.mainGetBuildinOption(key: kOptionHideServerSetting) == 'Y';
     final hideProxy =
@@ -1447,7 +1438,7 @@ class _NetworkState extends State<_Network> with AutomaticKeepAliveClientMixin {
     }
 
     return _Card(
-      title: 'Network',
+      title: 'Select the nearest region',
       children: [
         Container(
           child: Column(
@@ -1457,30 +1448,10 @@ class _NetworkState extends State<_Network> with AutomaticKeepAliveClientMixin {
                 ListTile(
                   leading: Icon(Icons.dns_outlined, color: _accentColor),
                   title: Text(
-                    translate('ID/Relay Server'),
+                    translate('Available Regions'),
                     style: TextStyle(fontSize: _kContentFontSize),
                   ),
-                  enabled: !locked,
                   onTap: () => showServerSettings(gFFI.dialogManager),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  minLeadingWidth: 0,
-                  horizontalTitleGap: 10,
-                ),
-              if (!hideServer && !hideProxy)
-                Divider(height: 1, indent: 16, endIndent: 16),
-              if (!hideProxy)
-                ListTile(
-                  leading:
-                      Icon(Icons.network_ping_outlined, color: _accentColor),
-                  title: Text(
-                    translate('Socks5/Http(s) Proxy'),
-                    style: TextStyle(fontSize: _kContentFontSize),
-                  ),
-                  enabled: !locked,
-                  onTap: changeSocks5Proxy,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -1915,19 +1886,19 @@ class _AboutState extends State<_About> {
                       .marginSymmetric(vertical: 4.0)),
               if (!isWeb)
                 SelectionArea(
-                    child: Text('${translate('Fingerprint')}: $fingerprint')
+                    child: Text('${translate('Email')}: nemodesk@163.com')
                         .marginSymmetric(vertical: 4.0)),
+              // InkWell(
+              //     onTap: () {
+              //       launchUrlString('https://nemodesk.online');
+              //     },
+              //     child: Text(
+              //       translate('Privacy Statement'),
+              //       style: linkStyle,
+              //     ).marginSymmetric(vertical: 4.0)),
               InkWell(
                   onTap: () {
-                    launchUrlString('https://rustdesk.com/privacy.html');
-                  },
-                  child: Text(
-                    translate('Privacy Statement'),
-                    style: linkStyle,
-                  ).marginSymmetric(vertical: 4.0)),
-              InkWell(
-                  onTap: () {
-                    launchUrlString('https://rustdesk.com');
+                    launchUrlString('https://nemodesk.online');
                   },
                   child: Text(
                     translate('Website'),
@@ -1945,7 +1916,7 @@ class _AboutState extends State<_About> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Copyright © ${DateTime.now().toString().substring(0, 4)} Purslane Ltd.\n$license',
+                            'Copyright © ${DateTime.now().toString().substring(0, 4)} NemoDesk\n$license',
                             style: const TextStyle(color: Colors.white),
                           ),
                           Text(

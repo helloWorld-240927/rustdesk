@@ -39,7 +39,7 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
   double? get height => bind.isIncomingOnly() ? null : em * 3;
 
   void onUsePublicServerGuide() {
-    const url = "https://rustdesk.com/pricing.html";
+    const url = "https://www.baidu.com";
     canLaunchUrlString(url).then((can) {
       if (can) {
         launchUrlString(url);
@@ -78,9 +78,7 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
 
     setupServerWidget() => Flexible(
           child: Offstage(
-            offstage: !(!_svcStopped.value &&
-                stateGlobal.svcStatus.value == SvcStatus.ready &&
-                _svcIsUsingPublicServer.value),
+            offstage: false,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -500,14 +498,6 @@ class _ConnectionPageState extends State<ConnectionPage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Button(
-                    isOutline: true,
-                    onTap: () => onConnect(isFileTransfer: true),
-                    text: "Transfer file",
-                  ),
-                  const SizedBox(
-                    width: 17,
-                  ),
                   Button(onTap: onConnect, text: "Connect"),
                 ],
               ),

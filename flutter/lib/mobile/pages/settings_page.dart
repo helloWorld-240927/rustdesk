@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:flutter/material.dart';
 
 import '../../common.dart';
 import '../../common/widgets/dialog.dart';
@@ -655,7 +656,7 @@ class _SettingsState extends State<SettingsPage> with WidgetsBindingObserver {
         SettingsSection(title: Text(translate("Settings")), tiles: [
           if (!disabledSettings && !_hideNetwork && !_hideServer)
             SettingsTile(
-                title: Text(translate('ID/Relay Server')),
+                title: Text(translate('Available Regions')),
                 leading: Icon(Icons.cloud),
                 onPressed: (context) {
                   showServerSettings(gFFI.dialogManager);

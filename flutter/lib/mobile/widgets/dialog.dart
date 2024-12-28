@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../../consts.dart';
 import 'package:flutter_hbb/common/widgets/setting_widgets.dart';
 import 'package:flutter_hbb/common/widgets/toolbar.dart';
 import 'package:get/get.dart';
@@ -147,18 +148,46 @@ void setTemporaryPasswordLengthDialog(
   }, backDismiss: true, clickMaskDismiss: true);
 }
 
+
 void showServerSettings(OverlayDialogManager dialogManager) async {
-  Map<String, dynamic> options = {};
   try {
-    options = jsonDecode(await bind.mainGetOptions());
+    final jsonString = '{"bj":"192.168.0.1","sh":"192.168.0.2"}';
+    final regionMap = json.decode(jsonString) as Map<String, dynamic>;
+    var region = bind.mainGetLocalOption(key: kCommConfKeyRegion);
+    dialogManager.show((setState, close, context) {
+      setRegion(v) async {
+        if (region != v) {
+          setState(() {
+            region = v;
+          });
+          final addr = regionMap[v];
+          final serverConfig = ServerConfig(
+            idServer: addr+':21116',
+            relayServer: addr+':21117',
+            apiServer: '',
+            key: '',
+          );
+          showServerSettingsWithValue(serverConfig, dialogManager);
+          await bind.mainSetLocalOption(key: kCommConfKeyRegion, value: v);
+          Future.delayed(Duration(milliseconds: 100), close);
+        }
+      }
+
+      return CustomAlertDialog(
+        title: Text(translate('Select the nearest region')),
+        content: Column(
+          children: regionMap.keys.map((key) {
+            return getRadio(Text(key), key, region, setRegion);
+          }).toList(),
+        ),
+      );
+    }, backDismiss: true, clickMaskDismiss: true);
   } catch (e) {
-    print("Invalid server config: $e");
+    //
   }
-  showServerSettingsWithValue(ServerConfig.fromOptions(options), dialogManager);
 }
 
-void showServerSettingsWithValue(
-    ServerConfig serverConfig, OverlayDialogManager dialogManager) async {
+void showServerSettingsWithValue(ServerConfig serverConfig, OverlayDialogManager dialogManager) async {
   var isInProgress = false;
   final idCtrl = TextEditingController(text: serverConfig.idServer);
   final relayCtrl = TextEditingController(text: serverConfig.relayServer);
@@ -178,6 +207,7 @@ void showServerSettingsWithValue(
 
   dialogManager.show((setState, close, context) {
     Future<bool> submit() async {
+      close();
       setState(() {
         isInProgress = true;
       });
@@ -194,109 +224,21 @@ void showServerSettingsWithValue(
       });
       return ret;
     }
-
-    Widget buildField(
-        String label, TextEditingController controller, String errorMsg,
-        {String? Function(String?)? validator, bool autofocus = false}) {
-      if (isDesktop || isWeb) {
-        return Row(
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(label),
-            ),
-            SizedBox(width: 8),
-            Expanded(
-              child: TextFormField(
-                controller: controller,
-                decoration: InputDecoration(
-                  errorText: errorMsg.isEmpty ? null : errorMsg,
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                ),
-                validator: validator,
-                autofocus: autofocus,
-              ).workaroundFreezeLinuxMint(),
-            ),
-          ],
-        );
-      }
-
-      return TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          errorText: errorMsg.isEmpty ? null : errorMsg,
-        ),
-        validator: validator,
-      ).workaroundFreezeLinuxMint();
-    }
-
     return CustomAlertDialog(
-      title: Row(
+      title: Text(translate('In the same region')),
+      content: Column(
         children: [
-          Expanded(child: Text(translate('ID/Relay Server'))),
-          ...ServerConfigImportExportWidgets(controllers, errMsgs),
+          ElevatedButton(
+            onPressed: submit,
+            child: Text('OK'),
+
+          ),
         ],
       ),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 500),
-        child: Form(
-          child: Obx(() => Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  buildField(translate('ID Server'), idCtrl, idServerMsg.value,
-                      autofocus: true),
-                  SizedBox(height: 8),
-                  if (!isIOS && !isWeb) ...[
-                    buildField(translate('Relay Server'), relayCtrl,
-                        relayServerMsg.value),
-                    SizedBox(height: 8),
-                  ],
-                  buildField(
-                    translate('API Server'),
-                    apiCtrl,
-                    apiServerMsg.value,
-                    validator: (v) {
-                      if (v != null && v.isNotEmpty) {
-                        if (!(v.startsWith('http://') ||
-                            v.startsWith("https://"))) {
-                          return translate("invalid_http");
-                        }
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 8),
-                  buildField('Key', keyCtrl, ''),
-                  if (isInProgress)
-                    Padding(
-                      padding: EdgeInsets.only(top: 8),
-                      child: LinearProgressIndicator(),
-                    ),
-                ],
-              )),
-        ),
-      ),
-      actions: [
-        dialogButton('Cancel', onPressed: () {
-          close();
-        }, isOutline: true),
-        dialogButton(
-          'OK',
-          onPressed: () async {
-            if (await submit()) {
-              close();
-              showToast(translate('Successful'));
-            } else {
-              showToast(translate('Failed'));
-            }
-          },
-        ),
-      ],
     );
-  });
+  }, backDismiss: true, clickMaskDismiss: true);
 }
+
 
 void setPrivacyModeDialog(
   OverlayDialogManager dialogManager,

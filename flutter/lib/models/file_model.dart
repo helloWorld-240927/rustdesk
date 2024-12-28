@@ -1359,8 +1359,6 @@ extension JobStateDisplay on JobState {
     switch (this) {
       case JobState.none:
         return translate("Waiting");
-      case JobState.inProgress:
-        return translate("Transfer file");
       case JobState.done:
         return translate("Finished");
       case JobState.error:
