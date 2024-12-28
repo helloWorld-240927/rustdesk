@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e -o pipefail
-echo "scl_test_1"
+
 ANDROID_ABI=$1
 
 # Build RustDesk dependencies for Android using vcpkg.json
@@ -9,37 +9,36 @@ ANDROID_ABI=$1
 #   1. set VCPKG_ROOT / ANDROID_NDK path environment variables
 #   2. vcpkg initialized
 #   3. ndk, version: r25c or newer
-echo "scl_test_2"
+
 if [ -z "$ANDROID_NDK_HOME" ]; then
   echo "Failed! Please set ANDROID_NDK_HOME"
   exit 1
 fi
-echo "scl_test_3"
+
 if [ -z "$VCPKG_ROOT" ]; then
   echo "Failed! Please set VCPKG_ROOT"
   exit 1
 fi
-echo "scl_test_4"
+
 API_LEVEL="21"
 
 # Get directory of this script
-echo "scl_test_5"
+
 SCRIPTDIR="$(readlink -f "$0")"
 SCRIPTDIR="$(dirname "$SCRIPTDIR")"
 
 # Check if vcpkg.json is one level up - in root directory of RD
-echo "scl_test_6"
+
 if [ ! -f "$SCRIPTDIR/../vcpkg.json" ]; then
   echo "Failed! Please check where vcpkg.json is!"
   exit 1
 fi
 
 # NDK llvm toolchain
-echo "scl_test_7"
+
 HOST_TAG="linux-x86_64" # current platform, set as `ls $ANDROID_NDK/toolchains/llvm/prebuilt/`
 TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/$HOST_TAG
 
-echo "scl_test_8"
 function build {
   ANDROID_ABI=$1
 
@@ -80,7 +79,7 @@ if [ -d "$VCPKG_ROOT/installed/arm-neon-android" ]; then
   echo "*** [Finished] Move arm-neon-android to arm-android"
 fi
 }
-echo "scl_test_9"
+
 if [ ! -z "$ANDROID_ABI" ]; then
   build "$ANDROID_ABI"
 else
